@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.py[cod]
+*.pyo
+.DS_Store
+*.pdf
+!example.env
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.ipynb_checkpoints/

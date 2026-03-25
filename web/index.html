@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dental Bill Detective</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C8.5 2 6 4.5 6 7c0 2 1 3.5 2.5 4.5C7 12.5 6 14.5 6 17c0 3 2.5 5 6 5s6-2 6-5c0-2.5-1-4.5-2.5-5.5C17 10.5 18 9 18 7c0-2.5-2.5-5-6-5z" fill="#4f46e5"/>
+          <circle cx="12" cy="8" r="2" fill="white"/>
+        </svg>
+        <span>Dental Bill <strong>Detective</strong></span>
+      </div>
+      <span class="tagline">AI-powered billing audit · Powered by OpenClaw</span>
+    </div>
+
+    <!-- Sponsor Badges -->
+    <div class="sponsor-strip">
+      <div class="sponsor-badge" id="badge-civic" data-sponsor="civic">
+        <span class="badge-dot"></span>
+        <span class="badge-name">CIVIC</span>
+      </div>
+      <div class="sponsor-badge" id="badge-apify" data-sponsor="apify">
+        <span class="badge-dot"></span>
+        <span class="badge-name">APIFY</span>
+      </div>
+      <div class="sponsor-badge" id="badge-contextual" data-sponsor="contextual">
+        <span class="badge-dot"></span>
+        <span class="badge-name">CONTEXTUAL AI</span>
+      </div>
+      <div class="sponsor-badge" id="badge-redis" data-sponsor="redis">
+        <span class="badge-dot"></span>
+        <span class="badge-name">REDIS</span>
+      </div>
+      <div class="sponsor-badge" id="badge-openclaw" data-sponsor="openclaw">
+        <span class="badge-dot"></span>
+        <span class="badge-name">OPENCLAW</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Upload Section -->
+    <section class="upload-section" id="uploadSection">
+      <div class="upload-card">
+        <h1>Find Overcharges on Your Dental Bill</h1>
+        <p class="subtitle">Upload your treatment plan or dental invoice. Our AI audits every CDT code against FairHealth and CMS benchmarks in seconds.</p>
+
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" hidden>
+          <div class="upload-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/>
+              <polyline points="9,15 12,12 15,15"/>
+            </svg>
+          </div>
+          <p class="upload-main">Drop your dental bill here</p>
+          <p class="upload-sub">PDF, PNG, JPG supported · Names & IDs automatically redacted</p>
+          <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse Files</button>
+        </div>
+
+        <div class="file-selected hidden" id="fileSelected">
+          <div class="file-chip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#4f46e5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8" fill="none" stroke="white" stroke-width="2"/></svg>
+            <span id="selectedFileName">No file</span>
+            <button onclick="clearFile()">×</button>
+          </div>
+          <button class="analyze-btn" id="analyzeBtn" onclick="startAnalysis()">
+            Audit This Bill →
+          </button>
+        </div>
+
+        <div class="trust-row">
+          <span>🔒 PHI-safe via Civic</span>
+          <span>📊 FairHealth + CMS benchmarks</span>
+          <span>⚡ Results in ~15 seconds</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analysis Section -->
+    <section class="analysis-section hidden" id="analysisSection">
+      <div class="analysis-layout">
+
+        <!-- Left: Activity Feed -->
+        <div class="activity-panel">
+          <h3 class="panel-title">
+            <span class="pulse-ring"></span>
+            Live Activity
+          </h3>
+          <div class="activity-feed" id="activityFeed"></div>
+
+          <div class="sponsor-legend">
+            <div class="legend-item" data-sponsor="civic">
+              <span class="legend-dot" style="background:#059669"></span>CIVIC
+            </div>
+            <div class="legend-item" data-sponsor="apify">
+              <span class="legend-dot" style="background:#f59e0b"></span>APIFY
+            </div>
+            <div class="legend-item" data-sponsor="contextual">
+              <span class="legend-dot" style="background:#6366f1"></span>CONTEXTUAL AI
+            </div>
+            <div class="legend-item" data-sponsor="redis">
+              <span class="legend-dot" style="background:#dc2626"></span>REDIS
+            </div>
+            <div class="legend-item" data-sponsor="openclaw">
+              <span class="legend-dot" style="background:#7c3aed"></span>OPENCLAW
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Results (hidden until done) -->
+        <div class="results-panel" id="resultsPanel">
+          <div class="loading-placeholder" id="loadingPlaceholder">
+            <div class="spinner"></div>
+            <p>Auditing your bill...</p>
+          </div>
+
+          <div class="results-content hidden" id="resultsContent">
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+              <div class="summary-card">
+                <div class="card-label">Total Billed</div>
+                <div class="card-value" id="totalBilled">—</div>
+              </div>
+              <div class="summary-card fair">
+                <div class="card-label">FairHealth Estimate</div>
+                <div class="card-value" id="fairValue">—</div>
+              </div>
+              <div class="summary-card alert">
+                <div class="card-label">Potential Overcharge</div>
+                <div class="card-value" id="overchargeAmount">—</div>
+                <div class="card-pct" id="overchargePct">—</div>
+              </div>
+            </div>
+
+            <!-- Flags -->
+            <div class="flags-row" id="flagsRow"></div>
+
+            <!-- Line Items -->
+            <div class="section-header">
+              <h3>Line Item Audit</h3>
+              <span class="section-sub" id="providerName"></span>
+            </div>
+            <div class="line-items" id="lineItems"></div>
+
+            <!-- Tabs -->
+            <div class="output-tabs">
+              <button class="output-tab active" data-tab="script">📞 Phone Script</button>
+              <button class="output-tab" data-tab="letter">📄 Appeal Letter</button>
+            </div>
+            <div class="tab-content" id="scriptContent"></div>
+            <div class="tab-content hidden" id="letterContent">
+              <div class="appeal-download">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                  <line x1="12" y1="18" x2="12" y2="12"/>
+                  <polyline points="9,15 12,12 15,15"/>
+                </svg>
+                <div>
+                  <strong>Appeal Letter PDF</strong>
+                  <p>Generated by OpenClaw · Ready to mail or email to your provider</p>
+                </div>
+                <a class="download-btn" id="downloadBtn" href="#" download="dental_appeal_letter.pdf">Download PDF</a>
+              </div>
+              <p class="openclaw-note">
+                ⚡ Negotiation strategy and dispute letter handled by <strong>OpenClaw</strong> —
+                cross-referencing CDT codes against FairHealth 80th percentile benchmarks and CMS fee schedules.
+              </p>
+            </div>
+
+            <button class="restart-btn" onclick="restart()">← Analyze Another Bill</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

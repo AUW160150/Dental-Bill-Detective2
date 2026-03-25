@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  openclaw-scraper:
+    build:
+      context: ./openclaw
+      dockerfile: Dockerfile
+    command: python scrape.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CONTEXTUAL_API_KEY=${CONTEXTUAL_API_KEY}
+      - DATASTORE_ID=${DATASTORE_ID}
+      - APIFY_API_TOKEN=${APIFY_API_TOKEN}
+      - REDIS_URL=${REDIS_URL}
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  telegram-bot:
+    build:
+      context: ./openclaw
+      dockerfile: Dockerfile
+    command: python telegram_bot.py
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CONTEXTUAL_API_KEY=${CONTEXTUAL_API_KEY}
+      - DATASTORE_ID=${DATASTORE_ID}
+      - AGENT_ID=${AGENT_ID}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - REDIS_URL=${REDIS_URL}
+      - CIVIC_API_KEY=${CIVIC_API_KEY}
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      - openclaw-scraper
