@@ -1,4 +1,4 @@
-# Dental Bill Detective v2
+# Dental Bill Detective v2: https://youtu.be/2iXo3ooZv54
 
 An OpenClaw skill for ClawHub that audits dental bills for overcharges, duplicate charges, unbundled procedure codes, and upcoding fraud.
 
