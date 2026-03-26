@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dental Bill Detective v2 — Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0a0a0f;
+  --surface:#13131a;
+  --surface2:#1c1c27;
+  --border:#2a2a3d;
+  --text:#e8e8f2;
+  --muted:#6b6b8a;
+  --accent:#4f46e5;
+  --civic:#059669;
+  --apify:#f59e0b;
+  --contextual:#6366f1;
+  --redis:#dc2626;
+  --openclaw:#7c3aed;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;
+  overflow:hidden;
+  user-select:none;
+}
+
+/* ── Slideshow wrapper ── */
+.deck{
+  width:100vw;
+  height:100vh;
+  position:relative;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:60px;
+  opacity:0;
+  transform:translateX(60px);
+  transition:opacity .45s ease, transform .45s ease;
+  pointer-events:none;
+}
+.slide.active{
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:all;
+}
+.slide.exit{
+  opacity:0;
+  transform:translateX(-60px);
+}
+
+/* ── Nav ── */
+.nav{
+  position:fixed;
+  bottom:32px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  gap:16px;
+  z-index:100;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:40px;
+  padding:10px 20px;
+}
+.nav-btn{
+  background:none;
+  border:1px solid var(--border);
+  color:var(--text);
+  width:36px;height:36px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+.nav-btn:disabled{opacity:.3;cursor:default;}
+.dots{display:flex;gap:6px;}
+.dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--border);
+  cursor:pointer;
+  transition:all .2s;
+}
+.dot.active{background:var(--accent);width:20px;border-radius:3px;}
+.slide-count{font-size:12px;color:var(--muted);min-width:40px;text-align:center;}
+
+/* ── Shared components ── */
+.label{
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 14px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+}
+.pill-accent{background:#4f46e520;color:#818cf8;border:1px solid #4f46e540;}
+.pill-civic{background:#05966920;color:#34d399;border:1px solid #05966940;}
+.pill-apify{background:#f59e0b20;color:#fcd34d;border:1px solid #f59e0b40;}
+.pill-contextual{background:#6366f120;color:#a5b4fc;border:1px solid #6366f140;}
+.pill-redis{background:#dc262620;color:#fca5a5;border:1px solid #dc262640;}
+.pill-openclaw{background:#7c3aed20;color:#c4b5fd;border:1px solid #7c3aed40;}
+
+.card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:24px;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 1 — TITLE
+══════════════════════════════════════════ */
+#s1{
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, #4f46e515 0%, transparent 70%),
+             var(--bg);
+  text-align:center;
+}
+.title-logo{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  margin-bottom:24px;
+}
+.title-logo svg{filter:drop-shadow(0 0 20px #4f46e5aa);}
+.title-h1{
+  font-size:64px;font-weight:900;line-height:1.05;
+  background:linear-gradient(135deg,#e8e8f2 30%,#a5b4fc 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:16px;
+}
+.title-sub{font-size:20px;color:var(--muted);margin-bottom:32px;line-height:1.5;}
+.title-badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
+.github-link{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--muted);font-size:13px;
+  border:1px solid var(--border);border-radius:8px;padding:8px 16px;
+  text-decoration:none;transition:all .2s;
+}
+.github-link:hover{border-color:var(--accent);color:var(--text);}
+
+/* ══════════════════════════════════════════
+   SLIDE 2 — PROBLEM
+══════════════════════════════════════════ */
+#s2 .problem-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  width:100%;max-width:900px;margin-top:32px;
+}
+.problem-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:16px;padding:28px 24px;text-align:center;
+}
+.problem-card .stat{
+  font-size:52px;font-weight:900;
+  background:linear-gradient(135deg,#f87171,#fca5a5);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:8px;
+}
+.problem-card p{font-size:14px;color:var(--muted);line-height:1.5;}
+.problem-hero{font-size:42px;font-weight:900;text-align:center;margin-bottom:8px;}
+.problem-hero span{
+  background:linear-gradient(135deg,#f87171,#fb923c);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 3 — TREATMENT PLAN (the actual doc)
+══════════════════════════════════════════ */
+#s3{justify-content:flex-start;padding-top:50px;}
+#s3 .doc-wrap{
+  width:100%;max-width:1000px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:20px;align-items:start;
+}
+.doc-card{
+  background:var(--surface2);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;
+}
+.doc-header{
+  background:linear-gradient(135deg,var(--surface),#1a1a2e);
+  border-bottom:1px solid var(--border);
+  padding:16px 20px;
+}
+.doc-header h3{font-size:14px;font-weight:700;margin-bottom:2px;}
+.doc-header p{font-size:11px;color:var(--muted);}
+.doc-body{padding:16px 20px;}
+.doc-table{width:100%;border-collapse:collapse;font-size:12px;}
+.doc-table th{
+  text-align:left;padding:6px 8px;
+  font-size:10px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:1px solid var(--border);
+}
+.doc-table td{
+  padding:7px 8px;border-bottom:1px solid #1e1e2d;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+}
+.doc-table tr:last-child td{border-bottom:none;}
+.doc-table .code{color:#a5b4fc;font-weight:600;}
+.doc-table .amt{color:#e8e8f2;text-align:right;}
+.doc-table .flag{text-align:right;}
+.flag-over{color:#f87171;font-weight:700;font-size:10px;}
+.flag-ok{color:#34d399;font-size:10px;}
+.total-row td{
+  border-top:1px solid var(--border) !important;
+  font-weight:700;padding-top:10px !important;
+}
+.total-row .amt{color:#f87171;font-size:13px;}
+.audit-summary{
+  background:var(--surface2);border:1px solid #f59e0b40;
+  border-radius:14px;padding:20px;
+}
+.audit-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;
+}
+.audit-row:last-child{border-bottom:none;}
+.audit-row .val{font-family:'JetBrains Mono',monospace;font-weight:700;}
+.val-red{color:#f87171;}
+.val-green{color:#34d399;}
+.val-yellow{color:#fcd34d;}
+
+/* ══════════════════════════════════════════
+   SLIDE 4 — ARCHITECTURE
+══════════════════════════════════════════ */
+#s4 .arch{
+  width:100%;max-width:900px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  margin-top:24px;
+}
+.arch-row{display:flex;align-items:center;gap:12px;width:100%;}
+.arch-box{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:14px 20px;
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:10px;
+  flex:1;
+}
+.arch-box .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.arch-arrow{
+  display:flex;flex-direction:column;align-items:center;
+  padding:4px 0;color:var(--muted);font-size:18px;
+}
+.arch-sponsors{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  width:100%;margin-top:4px;
+}
+.arch-sponsor{
+  border-radius:10px;padding:12px;text-align:center;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+}
+.arch-connector{
+  display:flex;justify-content:space-around;width:100%;
+  padding:0;position:relative;
+}
+.arch-connector::before{
+  content:'';position:absolute;top:0;left:50%;
+  width:1px;height:100%;background:var(--border);transform:translateX(-50%);
+}
+.vline{
+  width:1px;height:24px;background:var(--border);
+  margin:0 auto;
+}
+
+/* ══════════════════════════════════════════
+   SLIDE 5 — CIVIC
+══════════════════════════════════════════ */
+.sponsor-slide{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:32px;width:100%;max-width:1000px;
+  align-items:center;
+}
+.sponsor-left h2{
+  font-size:48px;font-weight:900;margin-bottom:12px;line-height:1.1;
+}
+.sponsor-left p{font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.sponsor-left .role{
+  font-size:13px;font-weight:600;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:12px 16px;
+  border-left:3px solid;
+  margin-bottom:12px;
+}
+.sponsor-right{display:flex;flex-direction:column;gap:12px;}
+.code-block{
+  background:var(--surface2);border:1px solid var(--border);border-radius:12px;
+  padding:20px;font-family:'JetBrains Mono',monospace;font-size:12px;
+  line-height:1.8;color:#a5b4fc;
+  overflow:hidden;
+}
+.code-block .comment{color:var(--muted);}
+.code-block .keyword{color:#f472b6;}
+.code-block .string{color:#86efac;}
+.code-block .fn{color:#fbbf24;}
+.code-block .var{color:#a5b4fc;}
+
+/* ══════════════════════════════════════════
+   SLIDE — RESULTS
+══════════════════════════════════════════ */
+#s9{justify-content:flex-start;padding-top:48px;}
+.results-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  width:100%;max-width:960px;margin-bottom:20px;
+}
+.res-card{
+  border-radius:14px;padding:20px;text-align:center;
+  border:1px solid;
+}
+.res-card .num{font-size:38px;font-weight:900;font-family:'JetBrains Mono',monospace;}
+.res-card .lbl{font-size:12px;margin-top:4px;font-weight:500;}
+.findings-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  width:100%;max-width:960px;
+}
+.finding{
+  display:flex;align-items:flex-start;gap:12px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;
+}
+.finding-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.finding-text strong{display:block;font-size:13px;margin-bottom:3px;}
+.finding-text span{font-size:12px;color:var(--muted);}
+
+/* ══════════════════════════════════════════
+   SLIDE — VIDEO
+══════════════════════════════════════════ */
+#s10{
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,#7c3aed12 0%,transparent 70%),var(--bg);
+  text-align:center;
+}
+.video-wrap{
+  position:relative;
+  width:720px;max-width:90vw;
+  border-radius:20px;overflow:hidden;
+  border:2px solid var(--border);
+  box-shadow:0 0 60px #7c3aed30;
+  cursor:pointer;
+  margin:28px auto 0;
+  background:#000;
+}
+.video-thumb{
+  width:100%;
+  display:block;
+  background:linear-gradient(135deg,#0f0f13 0%,#1a1a2e 100%);
+  height:405px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;
+}
+.play-btn{
+  width:80px;height:80px;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;
+  box-shadow:0 0 40px #7c3aed60;
+}
+.play-btn:hover{transform:scale(1.1);}
+.play-btn svg{margin-left:4px;}
+.video-title{font-size:18px;font-weight:700;color:var(--text);}
+.video-sub{font-size:13px;color:var(--muted);}
+.video-link{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:16px;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white;text-decoration:none;
+  padding:12px 28px;border-radius:10px;
+  font-weight:700;font-size:15px;
+  transition:transform .15s,box-shadow .2s;
+}
+.video-link:hover{transform:translateY(-2px);box-shadow:0 8px 24px #7c3aed50;}
+
+/* ══════════════════════════════════════════
+   BG decorations
+══════════════════════════════════════════ */
+.bg-glow{
+  position:fixed;pointer-events:none;border-radius:50%;filter:blur(80px);opacity:.15;z-index:0;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow" style="width:600px;height:600px;background:#4f46e5;top:-200px;right:-200px;"></div>
+<div class="bg-glow" style="width:400px;height:400px;background:#7c3aed;bottom:-150px;left:-100px;"></div>
+
+<div class="deck">
+
+<!-- ═══════════ SLIDE 1: TITLE ═══════════ -->
+<div class="slide active" id="s1">
+  <div class="title-logo">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C8.5 2 6 4.5 6 7c0 2 1 3.5 2.5 4.5C7 12.5 6 14.5 6 17c0 3 2.5 5 6 5s6-2 6-5c0-2.5-1-4.5-2.5-5.5C17 10.5 18 9 18 7c0-2.5-2.5-5-6-5z" fill="#4f46e5"/>
+      <circle cx="12" cy="8" r="2" fill="white"/>
+    </svg>
+  </div>
+  <div class="label">OpenClaw Skill · ClawHub</div>
+  <div class="title-h1">Dental Bill Detective</div>
+  <div class="title-sub">AI-powered dental billing auditor that finds overcharges,<br>duplicate codes, and upcoding — in seconds.</div>
+  <div class="title-badges">
+    <span class="pill pill-civic">● Civic</span>
+    <span class="pill pill-apify">● Apify</span>
+    <span class="pill pill-contextual">● Contextual AI</span>
+    <span class="pill pill-redis">● Redis</span>
+    <span class="pill pill-openclaw">● OpenClaw</span>
+  </div>
+  <a class="github-link" href="https://github.com/AUW160150/Dental-Bill-Detective2" target="_blank">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+    github.com/AUW160150/Dental-Bill-Detective2
+  </a>
+</div>
+
+<!-- ═══════════ SLIDE 2: THE PROBLEM ═══════════ -->
+<div class="slide" id="s2">
+  <div class="label">The Problem</div>
+  <div class="problem-hero">Dental bills are a <span>black box.</span></div>
+  <p style="color:var(--muted);font-size:16px;text-align:center;max-width:560px;margin-bottom:36px;line-height:1.7;">
+    Patients receive itemized bills full of cryptic CDT codes with no way to verify if they were charged fairly — or even correctly.
+  </p>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="stat">80%</div>
+      <p>of medical/dental bills contain at least one error, according to the Medical Billing Advocates of America</p>
+    </div>
+    <div class="problem-card">
+      <div class="stat">$1,300</div>
+      <p>average amount US patients overpay annually due to billing errors and inflated charges</p>
+    </div>
+    <div class="problem-card">
+      <div class="stat">CDT</div>
+      <p>procedure codes are opaque — most patients have no idea what D2393 or D8090 mean or what they should cost</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 3: THE ACTUAL DOCUMENT ═══════════ -->
+<div class="slide" id="s3">
+  <div class="label" style="align-self:flex-start">Real Document Analyzed · Treatment Plan 8/1/2025</div>
+  <div class="doc-wrap">
+    <!-- Left: the doc -->
+    <div class="doc-card">
+      <div class="doc-header">
+        <h3>SERENITY DENTAL SPA</h3>
+        <p>Sheila Shahabi DDS Inc. · 345 California St. Suite 170, San Francisco, CA · (415) 576-9400</p>
+        <p style="margin-top:4px;color:#6b6b8a;font-size:10px;">Patient: Mahtabin Rodela Rozbu · ID: 9873 · Plan: DOC</p>
+      </div>
+      <div class="doc-body">
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>CDT Code</th>
+              <th>Procedure</th>
+              <th>Th.</th>
+              <th style="text-align:right">Billed</th>
+              <th style="text-align:right">Ins.</th>
+              <th style="text-align:right">Patient</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="code">D4910</td><td>Periodontal Maintenance</td><td>—</td><td class="amt">$177</td><td class="amt" style="color:var(--muted)">$0</td><td class="amt">$177</td></tr>
+            <tr><td class="code">D2394</td><td>Resin Composite – 4 Surf.</td><td>2</td><td class="amt">$314</td><td class="amt" style="color:var(--muted)">$198</td><td class="amt">$116</td></tr>
+            <tr><td class="code">D2393</td><td>Resin Composite – 3 Surf.</td><td>3</td><td class="amt">$271</td><td class="amt" style="color:var(--muted)">$203</td><td class="amt">$68</td></tr>
+            <tr><td class="code">D2393</td><td>Resin Composite – 3 Surf.</td><td>14</td><td class="amt">$271</td><td class="amt" style="color:var(--muted)">$203</td><td class="amt">$68</td></tr>
+            <tr><td class="code">D2394</td><td>Resin Composite – 4 Surf.</td><td>15</td><td class="amt">$314</td><td class="amt" style="color:var(--muted)">$236</td><td class="amt">$78</td></tr>
+            <tr><td class="code">D2393</td><td>Resin Composite – 3 Surf.</td><td>18</td><td class="amt">$271</td><td class="amt" style="color:var(--muted)">$203</td><td class="amt">$68</td></tr>
+            <tr><td class="code">D2393</td><td>Resin Composite – 3 Surf.</td><td>19</td><td class="amt">$271</td><td class="amt" style="color:var(--muted)">$203</td><td class="amt">$68</td></tr>
+            <tr><td class="code">D2391</td><td>Resin Composite – 1 Surf.</td><td>20</td><td class="amt">$182</td><td class="amt" style="color:var(--muted)">$137</td><td class="amt">$45</td></tr>
+            <tr><td class="code">D2393</td><td>Resin Composite – 3 Surf.</td><td>30</td><td class="amt">$271</td><td class="amt" style="color:var(--muted)">$72</td><td class="amt">$199</td></tr>
+            <tr><td class="code">D2393</td><td>Resin Composite – 3 Surf.</td><td>31</td><td class="amt">$271</td><td class="amt" style="color:var(--muted)">$0</td><td class="amt">$271</td></tr>
+            <tr><td class="code">D8090</td><td>Comprehensive Ortho Treat.</td><td>—</td><td class="amt">$6,590</td><td class="amt" style="color:var(--muted)">$500</td><td class="amt">$6,090</td></tr>
+            <tr><td class="code">D8680</td><td>Orthodontic Retention</td><td>—</td><td class="amt">$1,100</td><td class="amt" style="color:var(--muted)">$0</td><td class="amt">$1,100</td></tr>
+            <tr class="total-row">
+              <td colspan="3"><strong>TOTAL PROPOSED</strong></td>
+              <td class="amt" style="color:#f87171;font-size:14px"><strong>$10,303</strong></td>
+              <td class="amt" style="color:var(--muted)">$1,955</td>
+              <td class="amt" style="color:#f87171"><strong>$8,348</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right: audit summary -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="audit-summary">
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Audit Results</div>
+        <div class="audit-row">
+          <span>Total Proposed</span>
+          <span class="val val-red">$10,303.00</span>
+        </div>
+        <div class="audit-row">
+          <span>FairHealth 80th Pct. Est.</span>
+          <span class="val val-green">$10,460.00</span>
+        </div>
+        <div class="audit-row">
+          <span>Codes Flagged</span>
+          <span class="val val-yellow">8 of 12 lines</span>
+        </div>
+        <div class="audit-row">
+          <span>Unique CDT Codes</span>
+          <span class="val" style="color:var(--text)">6 codes</span>
+        </div>
+        <div class="audit-row">
+          <span>D2393 × 6 above p80</span>
+          <span class="val val-red">+$36.00</span>
+        </div>
+        <div class="audit-row">
+          <span>D2394 × 2 above p80</span>
+          <span class="val val-red">+$8.00</span>
+        </div>
+        <div class="audit-row">
+          <span>D8680 above p80</span>
+          <span class="val val-red">+$50.00</span>
+        </div>
+      </div>
+      <div class="card" style="border-color:#4f46e530;font-size:12px;line-height:1.7;color:var(--muted);">
+        <strong style="color:var(--text);display:block;margin-bottom:6px;">📄 What the app does</strong>
+        Uploads this PDF → OCRs CDT codes → compares each line against FairHealth benchmarks → generates dispute letter + phone script → downloadable PDF in ~17 seconds.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 4: ARCHITECTURE ═══════════ -->
+<div class="slide" id="s4">
+  <div class="label">How It Works · Full Pipeline</div>
+  <div class="arch" style="max-width:820px;margin-top:20px;">
+
+    <div class="arch-row">
+      <div class="arch-box" style="border-color:#4f46e540;justify-content:center;flex:none;width:260px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#818cf8"><path d="M12 2C8.5 2 6 4.5 6 7c0 2 1 3.5 2.5 4.5C7 12.5 6 14.5 6 17c0 3 2.5 5 6 5s6-2 6-5c0-2.5-1-4.5-2.5-5.5C17 10.5 18 9 18 7c0-2.5-2.5-5-6-5z"/></svg>
+        User uploads dental bill (PDF / photo)
+      </div>
+      <div style="font-size:22px;color:var(--muted)">→</div>
+      <div class="arch-box" style="border-color:#4f46e540;justify-content:center;">
+        <span style="color:#818cf8;font-family:'JetBrains Mono',monospace;font-size:12px;">FastAPI + pdfplumber</span>
+        &nbsp;· Extract CDT codes
+      </div>
+    </div>
+
+    <div class="vline" style="height:20px"></div>
+
+    <div class="arch-sponsors">
+      <div class="arch-sponsor" style="background:#05966915;border:1px solid #05966940;color:#34d399;">
+        🔐 CIVIC<br><span style="font-weight:400;font-size:10px;color:#6b6b8a;">Identity verify<br>before any PHI stored</span>
+      </div>
+      <div class="arch-sponsor" style="background:#f59e0b15;border:1px solid #f59e0b40;color:#fcd34d;">
+        ⚡ APIFY<br><span style="font-weight:400;font-size:10px;color:#6b6b8a;">Scrape FairHealth<br>+ CMS benchmarks</span>
+      </div>
+      <div class="arch-sponsor" style="background:#6366f115;border:1px solid #6366f140;color:#a5b4fc;">
+        🧠 CONTEXTUAL AI<br><span style="font-weight:400;font-size:10px;color:#6b6b8a;">Upload bill → RAG<br>multi-hop audit</span>
+      </div>
+      <div class="arch-sponsor" style="background:#dc262615;border:1px solid #dc262640;color:#fca5a5;">
+        🗄 REDIS<br><span style="font-weight:400;font-size:10px;color:#6b6b8a;">Cache user plan<br>+ bill history 90d</span>
+      </div>
+      <div class="arch-sponsor" style="background:#7c3aed15;border:1px solid #7c3aed40;color:#c4b5fd;">
+        ✍ OPENCLAW<br><span style="font-weight:400;font-size:10px;color:#6b6b8a;">Negotiation strategy<br>+ appeal letter PDF</span>
+      </div>
+    </div>
+
+    <div class="vline" style="height:20px"></div>
+
+    <div class="arch-row">
+      <div class="arch-box" style="border-color:#7c3aed40;justify-content:center;">
+        📊 Overcharge % · Itemized disputes · Phone script · Appeal letter PDF
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 5: CIVIC ═══════════ -->
+<div class="slide" id="s5">
+  <div class="label" style="color:var(--civic)">Integration 1 of 5 · PHI Protection</div>
+  <div class="sponsor-slide">
+    <div class="sponsor-left">
+      <span class="pill pill-civic" style="margin-bottom:16px;font-size:13px;padding:6px 18px;">🔐 Civic</span>
+      <h2 style="color:#34d399">Identity<br>Verification</h2>
+      <p>Before any dental bill data is stored or uploaded, the user's identity is verified via Civic's Secure Identity Platform. No PHI moves without a valid verification token.</p>
+      <div class="role" style="border-color:var(--civic);">
+        <strong style="color:#34d399">Gate role:</strong> Acts as the HIPAA-safe PHI door — nothing gets cached in Redis or indexed in Contextual AI until Civic says the user is verified.
+      </div>
+    </div>
+    <div class="sponsor-right">
+      <div class="code-block">
+<span class="comment"># civic_auth.py</span>
+<span class="keyword">from</span> civic_auth <span class="keyword">import</span> verify_user
+
+<span class="comment"># Called before EVERY data operation</span>
+<span class="var">verification</span> = <span class="fn">verify_user</span>(
+    civic_api_key=<span class="var">CIVIC_API_KEY</span>,
+    token=<span class="var">user_civic_token</span>
+)
+
+<span class="keyword">if not</span> verification[<span class="string">"verified"</span>]:
+    <span class="keyword">raise</span> PermissionError(
+        <span class="string">"PHI processing blocked"</span>
+    )
+
+<span class="var">user_id</span> = verification[<span class="string">"user_id"</span>]
+<span class="comment"># ↑ stable hash — safe Redis key</span></div>
+      <div class="card" style="border-color:#05966940;font-size:13px;line-height:1.7;">
+        <strong style="color:#34d399">Live activity feed shows:</strong><br>
+        <span style="color:var(--muted)">"Verifying user identity before processing PHI..."<br>
+        "Identity verified ✓ — PHI processing authorized"</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 6: APIFY ═══════════ -->
+<div class="slide" id="s6">
+  <div class="label" style="color:var(--apify)">Integration 2 of 5 · Live Pricing Data</div>
+  <div class="sponsor-slide">
+    <div class="sponsor-left">
+      <span class="pill pill-apify" style="margin-bottom:16px;font-size:13px;padding:6px 18px;">⚡ Apify</span>
+      <h2 style="color:#fcd34d">Real-Time<br>Benchmark Scraping</h2>
+      <p>Apify's Puppeteer-based web-scraper actor fetches live pricing data from FairHealth consumer estimates and CMS Medicare fee schedules — the same data insurers use internally.</p>
+      <div class="role" style="border-color:var(--apify);">
+        <strong style="color:#fcd34d">Data role:</strong> Converts opaque CDT codes into a fair-market dollar range. Without this, there's nothing to compare billed amounts against.
+      </div>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+        <span class="pill pill-apify" style="font-size:10px">FairHealth Consumer</span>
+        <span class="pill pill-apify" style="font-size:10px">CMS Fee Schedule</span>
+        <span class="pill pill-apify" style="font-size:10px">ADA CDT Descriptions</span>
+      </div>
+    </div>
+    <div class="sponsor-right">
+      <div class="code-block">
+<span class="comment"># scrape.py</span>
+<span class="keyword">from</span> apify_client <span class="keyword">import</span> ApifyClient
+
+<span class="var">client</span> = <span class="fn">ApifyClient</span>(<span class="var">APIFY_API_TOKEN</span>)
+
+<span class="comment"># Puppeteer scraper — JS-rendered pages</span>
+<span class="var">run</span> = <span class="var">client</span>.actor(
+    <span class="string">"apify/web-scraper"</span>
+).call(run_input={
+    <span class="string">"startUrls"</span>: [{
+        <span class="string">"url"</span>: <span class="string">"https://fairhealthconsumer.org"</span>
+    }],
+    <span class="string">"maxCrawlingDepth"</span>: 1,
+})
+
+<span class="keyword">for</span> item <span class="keyword">in</span> <span class="var">client</span>.dataset(
+    <span class="var">run</span>[<span class="string">"defaultDatasetId"</span>]
+).iterate_items():
+    <span class="comment"># → { code: "D2393", p80: 265 }</span></div>
+      <div class="card" style="border-color:#f59e0b40;font-size:13px;">
+        <strong style="color:#fcd34d">For your treatment plan:</strong><br>
+        <span style="color:var(--muted)">Fetched benchmarks for 6 unique CDT codes in ~3.5 seconds. D2393 80th pct = $265, D8680 = $1,050, D8090 = $6,800.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 7: CONTEXTUAL AI ═══════════ -->
+<div class="slide" id="s7">
+  <div class="label" style="color:var(--contextual)">Integration 3 of 5 · Multi-Hop RAG Audit</div>
+  <div class="sponsor-slide">
+    <div class="sponsor-left">
+      <span class="pill pill-contextual" style="margin-bottom:16px;font-size:13px;padding:6px 18px;">🧠 Contextual AI</span>
+      <h2 style="color:#a5b4fc">RAG-Powered<br>Bill Auditing</h2>
+      <p>The bill PDF and FairHealth benchmark data are uploaded to a Contextual AI datastore. The RAG agent performs multi-hop reasoning across both documents to audit each CDT code.</p>
+      <div class="role" style="border-color:var(--contextual);">
+        <strong style="color:#a5b4fc">Reasoning role:</strong> Is each code billed correctly? Duplicate charges? Unbundling? Upcoding? It cross-references the bill against pricing benchmarks simultaneously.
+      </div>
+    </div>
+    <div class="sponsor-right">
+      <div class="code-block">
+<span class="comment"># bill_analyzer.py</span>
+<span class="keyword">from</span> contextual <span class="keyword">import</span> ContextualAI
+
+<span class="var">client</span> = <span class="fn">ContextualAI</span>(
+    api_key=<span class="var">CONTEXTUAL_API_KEY</span>
+)
+
+<span class="comment"># Upload bill to datastore</span>
+requests.<span class="fn">post</span>(
+    <span class="string">f"/v1/datastores/{DATASTORE_ID}/documents"</span>,
+    files={<span class="string">"file"</span>: (<span class="var">filename</span>, <span class="var">pdf_bytes</span>)}
+)
+
+<span class="comment"># IMPORTANT: use .create() not .query()</span>
+<span class="var">resp</span> = <span class="var">client</span>.agents.query.<span class="fn">create</span>(
+    agent_id=<span class="var">AGENT_ID</span>,
+    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>,
+               <span class="string">"content"</span>: <span class="var">audit_prompt</span>}]
+)
+<span class="var">answer</span> = <span class="var">resp</span>.message.content</div>
+      <div class="card" style="border-color:#6366f140;font-size:12px;line-height:1.6;">
+        <strong style="color:#a5b4fc">⚠ SDK gotcha:</strong><br>
+        <span style="color:var(--muted)">Use <code style="color:#fbbf24">client.agents.query.create()</code> — NOT <code style="color:#f87171">client.agents.query()</code>. The latter raises <em>QueryResource object is not callable</em>.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 8: REDIS + OPENCLAW ═══════════ -->
+<div class="slide" id="s8">
+  <div class="label">Integrations 4 & 5 · Memory + Negotiation</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:1000px;margin-top:20px;">
+
+    <!-- Redis -->
+    <div class="card" style="border-color:#dc262640;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <span class="pill pill-redis">🗄 Redis</span>
+        <span style="font-size:12px;color:var(--muted)">Persistent User Memory</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+        User's insurance plan and past bill audit results are cached per-user with a 90-day TTL. The next time the same user submits a bill, their insurer context is pre-loaded.
+      </p>
+      <div class="code-block" style="font-size:11px;">
+<span class="comment"># redis_cache.py</span>
+<span class="var">r</span> = redis.<span class="fn">from_url</span>(<span class="var">REDIS_URL</span>)
+
+<span class="comment"># Store insurance plan (no TTL)</span>
+<span class="var">r</span>.<span class="fn">set</span>(<span class="string">f"user:{id}:plan"</span>, <span class="fn">json.dumps</span>(<span class="var">plan</span>))
+
+<span class="comment"># Cache bill result — 90 days</span>
+<span class="var">r</span>.<span class="fn">setex</span>(
+    <span class="string">f"user:{id}:bill:{hash}"</span>,
+    <span class="string">7_776_000</span>,
+    <span class="fn">json.dumps</span>(<span class="var">result</span>)
+)</div>
+    </div>
+
+    <!-- OpenClaw -->
+    <div class="card" style="border-color:#7c3aed40;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <span class="pill pill-openclaw">✍ OpenClaw</span>
+        <span style="font-size:12px;color:var(--muted)">Negotiation + Letter</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+        OpenClaw handles the final negotiation layer — generating the itemized dispute phone script and drafting the formal appeal letter PDF, citing FairHealth benchmark rates.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:var(--surface);border:1px solid #7c3aed40;border-radius:8px;padding:10px 14px;font-size:12px;">
+          <strong style="color:#c4b5fd">Phone Script</strong><br>
+          <span style="color:var(--muted)">Word-for-word call script citing exact CDT codes + FairHealth dollar figures</span>
+        </div>
+        <div style="background:var(--surface);border:1px solid #7c3aed40;border-radius:8px;padding:10px 14px;font-size:12px;">
+          <strong style="color:#c4b5fd">Appeal Letter PDF</strong><br>
+          <span style="color:var(--muted)">Formal dispute letter with itemized table — ready to mail or email to provider</span>
+        </div>
+        <div style="background:var(--surface);border:1px solid #7c3aed40;border-radius:8px;padding:10px 14px;font-size:12px;">
+          <strong style="color:#c4b5fd">Live Activity Badge</strong><br>
+          <span style="color:var(--muted)">OpenClaw badge pulses in the UI header during negotiation generation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 9: RESULTS ═══════════ -->
+<div class="slide" id="s9">
+  <div class="label" style="align-self:flex-start">Audit Results · Serenity Dental Spa Treatment Plan</div>
+  <div class="results-grid">
+    <div class="res-card" style="background:#dc262610;border-color:#dc262640;">
+      <div class="num" style="color:#f87171">$10,303</div>
+      <div class="lbl" style="color:#fca5a5">Total Proposed by Provider</div>
+    </div>
+    <div class="res-card" style="background:#05966910;border-color:#05966940;">
+      <div class="num" style="color:#34d399">$10,460</div>
+      <div class="lbl" style="color:#6ee7b7">FairHealth 80th Pct. Estimate</div>
+    </div>
+    <div class="res-card" style="background:#f59e0b10;border-color:#f59e0b40;">
+      <div class="num" style="color:#fcd34d">8 / 12</div>
+      <div class="lbl" style="color:#fde68a">Line Items Flagged for Review</div>
+    </div>
+  </div>
+  <div class="findings-grid">
+    <div class="finding">
+      <div class="finding-dot" style="background:#f87171"></div>
+      <div class="finding-text">
+        <strong>D2393 × 6 — Overcharge</strong>
+        <span>Each 3-surface composite billed at $271 vs FairHealth 80th pct of $265. 6 teeth × $6 = $36 above benchmark.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-dot" style="background:#f87171"></div>
+      <div class="finding-text">
+        <strong>D2394 × 2 — Overcharge</strong>
+        <span>4-surface composite billed at $314 vs $310 benchmark on teeth 2 and 15.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-dot" style="background:#fcd34d"></div>
+      <div class="finding-text">
+        <strong>D8680 — Above Benchmark</strong>
+        <span>Orthodontic retention billed at $1,100 vs FairHealth p80 of $1,050 — $50 above. No insurance coverage.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-dot" style="background:#34d399"></div>
+      <div class="finding-text">
+        <strong>D8090 — Within Range</strong>
+        <span>Comprehensive ortho at $6,590 is below the FairHealth 80th percentile of $6,800. Reasonable charge.</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:16px;font-size:12px;color:var(--muted);text-align:center;">
+    OpenClaw generated a formal dispute letter + phone script citing these exact benchmarks · PDF downloadable in-app
+  </div>
+</div>
+
+<!-- ═══════════ SLIDE 10: DEMO VIDEO ═══════════ -->
+<div class="slide" id="s10">
+  <div class="label">Live Demo</div>
+  <h2 style="font-size:36px;font-weight:800;margin-bottom:6px;">See It In Action</h2>
+  <p style="color:var(--muted);font-size:15px;margin-bottom:0;">
+    Upload Treatment Plan.pdf → watch every sponsor light up → download appeal letter
+  </p>
+
+  <a href="https://youtu.be/2iXo3ooZv54" target="_blank" style="text-decoration:none;">
+    <div class="video-thumb">
+      <div class="play-btn">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+      <div class="video-title">Dental Bill Detective v2 — Demo Video</div>
+      <div class="video-sub">youtu.be/2iXo3ooZv54</div>
+    </div>
+  </a>
+
+  <a class="video-link" href="https://youtu.be/2iXo3ooZv54" target="_blank">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+    Watch Demo on YouTube
+  </a>
+
+  <div style="display:flex;gap:16px;margin-top:20px;flex-wrap:wrap;justify-content:center;">
+    <span class="pill pill-civic">🔐 Civic verified</span>
+    <span class="pill pill-apify">⚡ Apify scraped</span>
+    <span class="pill pill-contextual">🧠 Contextual AI indexed</span>
+    <span class="pill pill-redis">🗄 Redis cached</span>
+    <span class="pill pill-openclaw">✍ OpenClaw negotiated</span>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<nav class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)" disabled>‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="slide-count" id="count">1 / 10</span>
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">›</button>
+</nav>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const dotsEl = document.getElementById('dots');
+const countEl = document.getElementById('count');
+let cur = 0;
+
+// Build dots
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+function goTo(n) {
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('exit');
+  setTimeout(() => slides[cur-1>=0?cur:0]?.classList.remove('exit'), 450);
+  setTimeout(() => {
+    slides.forEach(s => s.classList.remove('exit'));
+  }, 460);
+  cur = Math.max(0, Math.min(n, slides.length-1));
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===cur));
+  countEl.textContent = `${cur+1} / ${slides.length}`;
+  document.getElementById('prevBtn').disabled = cur === 0;
+  document.getElementById('nextBtn').disabled = cur === slides.length-1;
+}
+
+function go(dir) { goTo(cur+dir); }
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+
+// Touch/swipe
+let tx=0;
+document.addEventListener('touchstart', e => tx=e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx)>50) go(dx>0?1:-1);
+});
+</script>
+</body>
+</html>
